@@ -2,12 +2,10 @@ from string import ascii_uppercase
 from random import choice
 
 def make_grid(cols, rows):
-    grid = {}
-    for c in range(cols):   # if cols is 5 c will be 0 to 4
-        for r in range(rows): # if rows is 3 r will be 0 to 2
-            grid[(c, r)] = choice(ascii_uppercase)
-    return grid
-    
+    return {(c, r): choice(ascii_uppercase) 
+                    for c in range(cols) 
+                    for r in range(rows)}
+
 def get_neighbours(pos):
     col, row = pos
     return [
@@ -22,8 +20,21 @@ def get_neighbours(pos):
             ]
             
 def all_grid_neighbours(grid):
-    all_neighbours = {}
-    for pos in grid:
-        neighbours = get_neighbours(pos)
-        all_neighbours[pos] =[pos] = neighbours
-        return all_neighbours
+    return {pos: [ n for n in get_neighbours(pos) if n in grid] for pos in grid}
+
+def path_to_word(grid, path):
+    word = ""
+    for pos in path:
+        word+= grid[pos]
+    return word
+    
+def read_wordfile(filename):
+    f = open(filename,"r")
+    text = f.read().upper()
+    words = text.split("\n")
+    # words = f.read().split("\n")
+    # words = [w.upper() for w in words]
+    f.close()
+    return words
+
+print(read_wordfile("bogwords.txt"))
